@@ -7,7 +7,7 @@ from django.shortcuts import render
 
 class CalculateView(APIView):
     def get(self, request):
-        return render(request, 'fcalculations/calculate.html')
+        return render(request, 'calculate_price.html')
 
     def post(self, request):
         rate_type = request.data.get('rate_type')
