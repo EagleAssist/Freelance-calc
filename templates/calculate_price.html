@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate Page</title>
+    
+    <!-- Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="container">
+
+    <div class="mt-4 mb-4">
+        <button id="mobile-btn" class="btn btn-primary">Mobile</button>
+        <button id="web-btn" class="btn btn-primary">Web</button>
+        <button id="dtp-btn" class="btn btn-primary">DTP</button>
+    </div>
+
+    <div id="calculate-form" style="display: none;">
+        <form id="calc-form">
+            <div class="form-group">
+                <label for="num-pages">Number of Pages:</label>
+                <input type="number" class="form-control" id="num-pages" name="num_pages" required>
+            </div>
+
+            <div class="form-group">
+                <label for="complexity">Complexity:</label>
+                <select class="form-control" id="complexity" name="complexity" required>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="calculate()">Submit</button>
+        </form>
+
+        <div id="result" class="mt-4"></div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <script>
+        function calculate() {
+            const rateType = document.getElementById('rate-type').value;
+            const complexity = document.getElementById('complexity').value;
+            const numPages = document.getElementById('num-pages').value;
+
+            // Use AJAX to send data to the Django API
+            // ...
+
+            // Update the result div with the response
+            // ...
+
+            document.getElementById('calculate-form').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+        }
+
+        document.getElementById('mobile-btn').addEventListener('click', function() {
+            document.getElementById('rate-type').value = 'mobile';
+            document.getElementById('calculate-form').style.display = 'block';
+        });
+
+        document.getElementById('web-btn').addEventListener('click', function() {
+            document.getElementById('rate-type').value = 'web';
+            document.getElementById('calculate-form').style.display = 'block';
+        });
+
+        document.getElementById('dtp-btn').addEventListener('click', function() {
+            document.getElementById('rate-type').value = 'dtp';
+            document.getElementById('calculate-form').style.display = 'block';
+        });
+    </script>
+
+</body>
+</html>
