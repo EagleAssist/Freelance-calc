@@ -21,6 +21,6 @@ urlpatterns = [
   path('admin/', admin.site.urls),
   path('',include('login.urls')),
   path('api-token-auth/', views.obtain_auth_token),
-  path('fcalculations/', include('fcalculations.urls'))
+  path('api/', include('fcalculations.urls'))
 ]
 
