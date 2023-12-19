@@ -16,9 +16,13 @@ class CalculateView(APIView):
 
         try:
             rate = Rate.objects.get(rate_type=rate_type, complexity=complexity)
+            total_cost = rate.rate * int(num_pages)
+            return Response({'total_cost': total_cost})
         except Rate.DoesNotExist:
             return Response({'error': 'Rate not found'}, status=status.HTTP_404_NOT_FOUND)
-
-        total_cost = rate.rate * int(num_pages)
-
-        return Response({'total_cost': total_cost})
+        except Exception as e:
+            # Log the exception for debugging
+            print(e)
+            return Response({'error': 'Internal server error'}, status=500)
+        
+        
