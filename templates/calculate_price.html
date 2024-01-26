@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculate Page</title>
+    
+    <!-- Bootstrap CSS link -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body class="container">
+
+    <div class="mt-4 mb-4">
+        <button id="mobile-btn" class="btn btn-primary" onclick="setRateType('mobile')">Mobile</button>
+        <button id="web-btn" class="btn btn-primary" onclick="setRateType('web')">Web</button>
+        <button id="dtp-btn" class="btn btn-primary" onclick="setRateType('dtp')">DTP</button>
+    </div>
+
+    <div id="calculate-form" style="display: none;">
+        <form id="calc-form">
+            {% csrf_token %} <!-- Include CSRF token in the form -->
+
+            <input type="hidden" id="rate-type" name="rate_type">
+
+            <div class="form-group">
+                <label for="num-pages">Number of Pages:</label>
+                <input type="number" class="form-control" id="num-pages" name="num_pages" required>
+            </div>
+
+            <div class="form-group">
+                <label for="complexity">Complexity:</label>
+                <select class="form-control" id="complexity" name="complexity" required>
+                    <option value="high">High</option>
+                    <option value="medium">Medium</option>
+                    <option value="low">Low</option>
+                </select>
+            </div>
+
+            <button type="button" class="btn btn-primary" onclick="calculate()">Submit</button>
+        </form>
+
+        <div id="loading" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+        </div>
+
+        <div id="result" class="mt-4"></div>
+    </div>
+
+    <!-- Load the full version of jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+    <script>
+        // Use jQuery.noConflict() to avoid conflicts
+        var $j = jQuery.noConflict();
+        
+        // Variables to store input values
+        var storedNumPages;
+        var storedComplexity;
+
+        function setRateType(type) {
+            document.getElementById('rate-type').value = type;
+            document.getElementById('calculate-form').style.display = 'block';
+
+            // Hide the buttons after selecting a rate type
+            document.getElementById('mobile-btn').style.display = 'none';
+            document.getElementById('web-btn').style.display = 'none';
+            document.getElementById('dtp-btn').style.display = 'none';
+
+            // Restore stored values if available
+            if (storedNumPages !== undefined) {
+                document.getElementById('num-pages').value = storedNumPages;
+            }
+            if (storedComplexity !== undefined) {
+                document.getElementById('complexity').value = storedComplexity;
+            }
+
+            document.getElementById('result').innerHTML = ''; // Clear previous result
+        }
+
+        function calculate() {
+            const rateType = document.getElementById('rate-type').value;
+            const complexity = document.getElementById('complexity').value;
+            const numPages = document.getElementById('num-pages').value;
+
+            // Store values for restoration after submit
+            storedNumPages = numPages;
+            storedComplexity = complexity;
+
+            // Display loading spinner while waiting for the response
+            document.getElementById('loading').style.display = 'block';
+
+            $j.ajax({
+                type: 'POST',
+                url: '/login/api/calculate/',  // Update this URL with your actual API endpoint
+                data: {
+                    csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
+                    rate_type: rateType,
+                    complexity: complexity,
+                    num_pages: numPages,
+                },
+                dataType: 'json',  // Specify the expected data type of the response
+                success: function(response) {
+                    // Update the result div with the response
+                    document.getElementById('result').innerHTML = 'Total Cost: ' + response.total_cost;
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    console.error('Error:', textStatus, errorThrown);
+                },
+                complete: function() {
+                    // Hide loading spinner after the response is received
+                    document.getElementById('loading').style.display = 'none';
+
+                    // Optionally, you can reset the form after submitting
+                    // document.getElementById('calc-form').reset();
+                }
+            });
+        }
+    </script>
+
+    <!-- Bootstrap JS scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>
