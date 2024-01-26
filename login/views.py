@@ -3,6 +3,9 @@ from django.contrib.auth import login, authenticate
 from django.views import View
 from django import forms
 from .models import CustomUser
+from django.http import HttpResponse
+from django.contrib.auth.hashers import check_password
+
 
 class CustomUserCreationForm(forms.ModelForm):
     password1 = forms.CharField(label='Password', widget=forms.PasswordInput)
@@ -38,16 +41,16 @@ class UserRegistrationView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
+        
         form = CustomUserCreationForm(request.POST)
+        
         if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password1')
-            user = authenticate(request, username=username, password=password)
-            login(request, user)
-            return redirect('home')  # Replace 'home' with your home URL
-        return render(request, self.template_name, {'form': form})
-
+            user=form.save()
+            
+            
+            
+        return HttpResponse("reg okay")
+    
 class UserLoginView(View):
     template_name = 'login.html'
     default_redirect_url = 'api/calculate/'
@@ -59,9 +62,16 @@ class UserLoginView(View):
     def post(self, request):
         form = CustomAuthenticationForm(data=request.POST)
         if form.is_valid():
-            user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            # user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            user = CustomUser.objects.get(username=form.cleaned_data['username'])
+            if check_password(form.cleaned_data['password'], user.password):
+                pass
+            else:
+                return HttpResponse('password error')
             if user:
                 login(request, user)
                 next_url = request.GET.get('next', self.default_redirect_url)
                 return redirect(next_url)
+            else:
+                return HttpResponse("auth error")
         return render(request, self.template_name, {'form': form})

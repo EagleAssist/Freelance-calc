@@ -5,6 +5,7 @@ from django.db import models
 class CustomUser(AbstractUser):
     mobile = models.CharField(max_length=15)
     location = models.CharField(max_length=100)
+    
 
     # Add related_name to avoid clashes with default User model
     groups = models.ManyToManyField(Group, related_name='customuser_set', blank=True)
