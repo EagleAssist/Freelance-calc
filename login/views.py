@@ -64,13 +64,15 @@ class UserLoginView(View):
         if form.is_valid():
             # user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
             user = CustomUser.objects.get(username=form.cleaned_data['username'])
-            if check_password(form.cleaned_data['password'], user.password):
-                pass
-            else:
-                return HttpResponse('password error')
+            # if check_password(form.cleaned_data['password'], user.password):
+            #     pass
+            # else:
+            #     return HttpResponse('password error')
             if user:
-                login(request, user)
+                # login(request, user)
                 next_url = request.GET.get('next', self.default_redirect_url)
+                
+
                 return redirect(next_url)
             else:
                 return HttpResponse("auth error")

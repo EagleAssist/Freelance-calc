@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -9,6 +10,55 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <body class="container">
+    {% load static %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="/">F-Calc</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+          </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            {% csrf_token %}
+            <input class="form-control mr-sm-1" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+          </form>
+        </div>
+        <ul class="navbar-nav ml-auto"></ul>
+        <li class="nav nav-item dropdown">
+            <a class="nav-link dropdown-toggle" style="color: rgb(238, 238, 245);" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome {{request.user}}</a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+             
+              <a class="dropdown-item" href="history">History</a>
+              <a class="dropdown-item" onclick="logout(event)">Logout</a>
+            </div>
+          </li>s
+        </ul>
+        <script>
+            function logout(event){
+                Swal.fire({
+                    title: 'Are you sure you want to Log out?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes!'
+                    }).then((result) => {
+                    if (result.value) {
+                        document.location= "/fcalculations/logout_user/"
+                    }
+                })
+            }
+        </script>
+
+
+
+</nav>
+
 
     <div class="mt-4 mb-4">
         <button id="mobile-btn" class="btn btn-primary" onclick="setRateType('mobile')">Mobile</button>
