@@ -11,10 +11,14 @@ from django.db.models import Case, When
 from django.views import View
 from django.core.serializers import serialize
 
+
 # from django.utils.decorators import method_decorator
 # from django.views.decorators.csrf import csrf_exempt
 
 # @method_decorator(csrf_exempt, name='dispatch')
+from django.contrib.auth.decorators import login_required
+
+# @login_required(login_url='/login')
 class CalculateView(APIView):
     def get(self, request):
         return render(request, 'calculate_price.html')
@@ -62,3 +66,7 @@ class history(View):
         context = {'history_data': serialized_history}
         print(context)
         return render(request, self.template_name, context)
+def logout_view(request):
+    logout(request)
+    
+    return redirect('/login')

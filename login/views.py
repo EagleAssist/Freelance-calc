@@ -46,6 +46,8 @@ class UserRegistrationView(View):
         
         if form.is_valid():
             user=form.save()
+        else:
+            return HttpResponse("form error")
             
             
             
