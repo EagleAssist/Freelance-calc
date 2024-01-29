@@ -1,33 +1,66 @@
-{%extends 'musicbeats/basic.htm'%}
-{% block title%}MusicBeats{% endblock %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Include necessary head content -->
 
-{% block body %}
-{% load static %} 
-<h1 style="color: rgb(158, 60, 60); text-align: center;">History</h1>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
-{% if history|length < 1 %}
-        <h3 style="text-align: center; padding-top: 5%;">You have no Video in your Watch Later</h3>
-{% endif %}
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
-<div class="container">
-{% for i in history reversed %}
-<div class="card mb-3" style="max-width: 940px; padding-top: 0%;">
-    <div class="row no-gutters">
-      <div class="col-md-4">
-        <img src="{{i.image}}" class="card-img" alt="...">
-      </div>
-      <div class="col-md-8">
-        <div class="card-body">
-          <h5 class="card-title" style="color: green; font-weight: 550;">{{i.name}}</h5>
-          <p class="card-text">Rate: {{i.rate}}</p>
-        <p class="card-text">Movie: {{i.movie}}</p>
-          <a href="/musicbeats/songs/{{i.song_id}}"><button class="btn btn-outline-danger">Listen Song</button></a>
-        </div>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container mt-5">
+    <h2>History</h2>
+    <table class="table">
+        <thead>
+            <tr>
+                <!-- <th>Field</th> -->
+                <th>Rate Type</th>
+                <th>Complexity</th>
+                <th>Num Pages</th>
+                <th>Rate</th>
+            </tr>
+        </thead>
+        <tbody id="history-table-body">
+            <!-- History data will be inserted here using jQuery -->
+        </tbody>
+    </table>
 </div>
-</div>
 
-{% endblock %}
+<script>
+  $(document).ready(function() {
+      var historyData = {{ history_data|safe }};
+
+      // No need to parse the JSON data as it's already a string
+      var parsedHistoryData = historyData;
+
+      // Populate the table
+      populateTable(parsedHistoryData);
+
+      function populateTable(historyData) {
+          var tableBody = $("#history-table-body");
+
+          // Clear existing rows
+          tableBody.empty();
+
+          // Iterate through history data and append rows to the table
+          $.each(historyData, function(index, historyItem) {
+              var row = "<tr>" +
+                //   "<td>" + historyItem.fields.field + "</td>" +
+                  "<td>" + historyItem.fields.hist_rate_type + "</td>" +
+                  "<td>" + historyItem.fields.hist_complexity+ "</td>" +
+                  "<td>" + historyItem.fields.hist_num_pages + "</td>" +
+                  "<td>" + historyItem.fields.hist_rate + "</td>" +
+                  "</tr>";
+              tableBody.append(row);
+          });
+      }
+  });
+</script>
+</body>
+</html>

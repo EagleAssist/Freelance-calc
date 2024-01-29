@@ -32,12 +32,14 @@
         <li class="nav nav-item dropdown">
             <a class="nav-link dropdown-toggle" style="color: rgb(238, 238, 245);" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome {{request.user}}</a>
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-             
+              
               <a class="dropdown-item" href="history">History</a>
               <a class="dropdown-item" onclick="logout(event)">Logout</a>
+              
             </div>
           </li>s
         </ul>
+        
         <script>
             function logout(event){
                 Swal.fire({

@@ -60,20 +60,24 @@ class UserLoginView(View):
         return render(request, self.template_name, {'form': form})
 
     def post(self, request):
-        form = CustomAuthenticationForm(data=request.POST)
-        if form.is_valid():
-            # user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
-            user = CustomUser.objects.get(username=form.cleaned_data['username'])
-            # if check_password(form.cleaned_data['password'], user.password):
-            #     pass
-            # else:
-            #     return HttpResponse('password error')
-            if user:
-                # login(request, user)
+        # form = CustomAuthenticationForm(data=request.POST)
+        # if form.is_valid():
+        #     # user = authenticate(request, username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+        #     user = CustomUser.objects.get(username=form.cleaned_data['username'])
+        #     # if check_password(form.cleaned_data['password'], user.password):
+        #     #     pass
+        #     # else:
+        #     #     return HttpResponse('password error')
+            username=request.POST['username']
+            password=request.POST['password']
+            user = authenticate(request,username=username,password=password)
+            if user is not None:
+                
+                login(request, user)
                 next_url = request.GET.get('next', self.default_redirect_url)
                 
 
                 return redirect(next_url)
             else:
                 return HttpResponse("auth error")
-        return render(request, self.template_name, {'form': form})
+        # return render(request, self.template_name, {'form': form})

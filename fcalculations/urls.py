@@ -1,10 +1,11 @@
 from django.urls import path
-from .views import CalculateView,logout_user
+from .views import CalculateView,history
 from django.views.generic import RedirectView
 
 urlpatterns = [
     path('calculate/', CalculateView.as_view(), name='calculate'),
-    # path('logout/', logout_user, name='logout_user'),
-    # path('history', views.history, name='history'),
-    path('calculate/logout/',RedirectView.as_view(url='login/'))
+    path('history',history.as_view(),name='history')
+    # path('history/<str:username>/', ListView.as_view() , name='Listview')
+   
+   
 ]

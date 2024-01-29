@@ -8,6 +8,9 @@ from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.db.models import Case, When
+from django.views import View
+from django.core.serializers import serialize
+
 # from django.utils.decorators import method_decorator
 # from django.views.decorators.csrf import csrf_exempt
 
@@ -39,9 +42,23 @@ class CalculateView(APIView):
             print(e)
             # return Response({'error': 'Internal server error'}, status=500)
             return Response({'error'+str(e)}, status=500)
-def logout_user(request):
-        logout(request)
-        return redirect("/fcalculations/logout_user")
-
-
+# class history(APIView):
+#     def get(self, request,*args, **kwargs):
+#         user = request.user
+#         history_of_user = History.objects.filter(user_his=user)
+#         # history_of_user=list(history_of_user)
+#         print(history_of_user)
+#         return render(request, "history.html", {'history_data':history_of_user})
         
+class history(View):
+    template_name = 'history.html'
+
+    def get(self, request, *args, **kwargs):
+        # Fetch the current user's history data
+        user_history = History.objects.filter(user_his=request.user)
+        
+        serialized_history = serialize('json', user_history)
+        # Pass the data to the template
+        context = {'history_data': serialized_history}
+        print(context)
+        return render(request, self.template_name, context)
