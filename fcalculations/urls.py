@@ -4,7 +4,7 @@ from django.views.generic import RedirectView
 
 urlpatterns = [
     path('calculate/', CalculateView.as_view(), name='calculate'),
-    path('history',history.as_view(),name='history')
+    path('calculate/history',history.as_view(),name='history')
     # path('history/<str:username>/', ListView.as_view() , name='Listview')
    
    
