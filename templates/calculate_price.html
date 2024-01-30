@@ -1,71 +1,57 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculate Page</title>
-    
+
     <!-- Bootstrap CSS link -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- SweetAlert CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.0/dist/sweetalert2.min.css">
 </head>
+
 <body class="container">
     {% load static %}
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <a class="navbar-brand" href="/">F-Calc</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-          <li class="nav-item active">
-            <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
-          </li>
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            {% csrf_token %}
-            <input class="form-control mr-sm-1" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-          </form>
+        <a class="navbar-brand" href="/">F-Calc</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Home <span class="sr-only">(current)</span></a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0">
+                {% csrf_token %}
+                <input class="form-control mr-sm-1" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
         </div>
-        <ul class="navbar-nav ml-auto"></ul>
-        <li class="nav nav-item dropdown">
-            <a class="nav-link dropdown-toggle" style="color: rgb(238, 238, 245);" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome {{request.user}}</a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              
-              <a class="dropdown-item" href="history">History</a>
-              <a class="dropdown-item" href="logout">Logout</a>
-              
-            </div>
-          </li>s
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" style="color: rgb(238, 238, 245);" href="#" id="navbarDropdown"
+                    role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Welcome
+                    {{request.user}}</a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="history">History</a>
+                    <a class="dropdown-item" href="#" onclick="logout()">Logout</a>
+                </div>
+            </li>
         </ul>
-        
-        <script>
-            function logout(event){
-                Swal.fire({
-                    title: 'Are you sure you want to Log out?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes!'
-                    }).then((result) => {
-                    if (result.value) {
-                        document.location= "/fcalculations/logout_user/"
-                    }
-                })
-            }
-        </script>
-
-
-
-</nav>
-
+    </nav>
 
     <div class="mt-4 mb-4">
-        <button id="mobile-btn" class="btn btn-primary" onclick="setRateType('mobile')">Mobile</button>
-        <button id="web-btn" class="btn btn-primary" onclick="setRateType('web')">Web</button>
-        <button id="dtp-btn" class="btn btn-primary" onclick="setRateType('dtp')">DTP</button>
+        <div class="btn-group" role="group">
+            <button id="mobile-btn" class="btn btn-primary" onclick="setRateType('mobile')">Mobile</button>
+            <button id="web-btn" class="btn btn-primary" onclick="setRateType('web')">Web</button>
+            <button id="dtp-btn" class="btn btn-primary" onclick="setRateType('dtp')">DTP</button>
+        </div>
     </div>
 
     <div id="calculate-form" style="display: none;">
@@ -103,10 +89,13 @@
     <!-- Load the full version of jQuery -->
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 
+    <!-- SweetAlert library -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.14.0/dist/sweetalert2.all.min.js"></script>
+
     <script>
         // Use jQuery.noConflict() to avoid conflicts
         var $j = jQuery.noConflict();
-        
+
         // Variables to store input values
         var storedNumPages;
         var storedComplexity;
@@ -145,27 +134,42 @@
 
             $j.ajax({
                 type: 'POST',
-                url: '/login/api/calculate/',  // Update this URL with your actual API endpoint
+                url: '/login/api/calculate/', // Update this URL with your actual API endpoint
                 data: {
                     csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value,
                     rate_type: rateType,
                     complexity: complexity,
                     num_pages: numPages,
                 },
-                dataType: 'json',  // Specify the expected data type of the response
-                success: function(response) {
+                dataType: 'json', // Specify the expected data type of the response
+                success: function (response) {
                     // Update the result div with the response
                     document.getElementById('result').innerHTML = 'Total Cost: ' + response.total_cost;
                 },
-                error: function(xhr, textStatus, errorThrown) {
+                error: function (xhr, textStatus, errorThrown) {
                     console.error('Error:', textStatus, errorThrown);
                 },
-                complete: function() {
+                complete: function () {
                     // Hide loading spinner after the response is received
                     document.getElementById('loading').style.display = 'none';
 
                     // Optionally, you can reset the form after submitting
                     // document.getElementById('calc-form').reset();
+                }
+            });
+        }
+
+        function logout() {
+            Swal.fire({
+                title: 'Are you sure you want to Log out?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes!'
+            }).then((result) => {
+                if (result.value) {
+                    document.location = "/fcalculations/logout_user/";
                 }
             });
         }
@@ -176,4 +180,5 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
+
 </html>
